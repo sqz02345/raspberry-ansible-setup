@@ -2,9 +2,6 @@
 
 This project allows you to configure Raspberry Pi devices from a macOS control node using Ansible.
 
-
-## New Push
-
 ## 🧰 Requirements
 
 - Ansible (install via `brew install ansible`)

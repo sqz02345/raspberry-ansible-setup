@@ -1,0 +1,34 @@
+---
+- name: Install dependencies
+  apt:
+    name: [apt-transport-https, ca-certificates, curl, gnupg, lsb-release]
+    state: present
+
+- name: Add Docker GPG key
+  shell: curl -fsSL https://download.docker.com/linux/debian/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+  args:
+    creates: /usr/share/keyrings/docker-archive-keyring.gpg
+
+- name: Add Docker repository (force bullseye for plucky workaround)
+  shell: echo "deb [arch=arm64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/debian bullseye stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+
+- name: Update APT and install Docker
+  apt:
+    name: [docker-ce, docker-ce-cli, containerd.io]
+    update_cache: yes
+    state: present
+
+- name: Enable and start Docker
+  systemd:
+    name: docker
+    enabled: true
+    state: started
+- name: Check if Docker service is running
+  shell: systemctl is-active docker
+  register: docker_status
+  changed_when: false
+
+- name: Print Docker service status
+  debug:
+    msg: "Docker service is {{ docker_status.stdout }}"

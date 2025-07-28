@@ -1,0 +1,7 @@
+---
+- name: Raspberry Pi Configuration
+  hosts: raspberry
+  become: true
+  roles:
+    - update
+    - docker
